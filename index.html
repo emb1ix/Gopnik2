@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SlavHub</title>
+    <link rel="shortcut icon" type="image/png" href="https://raw.githubusercontent.com/emb1ix/gopnik/main/youtube-music-icon-2048x2048-11gyian5.ico"/>
+    <style>
+        body {
+            font-family: 'Courier New', Courier, monospace;
+            margin: 0;
+            padding: 0;
+            background-color: #2B2B2B; /* Mørk grå baggrund */
+            color: #E0E0E0; /* Lys grå tekst */
+            line-height: 1.6;
+            text-align: center;
+        }
+        header {
+            background-color: #D32F2F; /* Rød baggrundsfarve */
+            color: #FFFFFF; /* Hvid tekstfarve */
+            padding: 20px;
+            position: relative; /* For at placere knapperne og oversætnings-widgeten */
+        }
+        header h1 {
+            margin: 0;
+            font-size: 36px;
+            font-weight: bold;
+        }
+        .header-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .logo {
+            max-width: 150px;
+            height: auto;
+            margin-right: 20px;
+            border-radius: 50%;
+            border: 3px solid #FFFFFF;
+        }
+        .login-btn, .translate-btn {
+            position: absolute;
+            top: 10px;
+            background-color: #FFFFFF;
+            color: #D32F2F;
+            padding: 3px 5px;
+            border: none;
+            border-radius:2px;
+            font-weight: bold;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .login-btn {
+            right: 20px;
+        }
+        .translate-btn {
+            left: 20px;
+        }
+        .login-btn:hover, .translate-btn:hover {
+            background-color: #f5f5f5;
+        }
+        /* Tilføjet styling til oversætnings-widgeten */
+        #google_translate_element {
+            position: absolute;
+            left: 20px;
+            top: 70px; /* Juster højden afhængigt af din layout */
+        }
+        nav {
+            background-color: #212121; /* Sort baggrundsfarve */
+            padding: 15px 0;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        nav a {
+            color: #FFFFFF; /* Hvid tekstfarve */
+            text-decoration: none;
+            margin: 0 15px;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+        nav a:hover {
+            text-decoration: underline;
+            color: #D32F2F; /* Rød ved hover */
+        }
+        section {
+            padding: 20px;
+            background-color: #424242; /* Mørk grå baggrundsfarve */
+            margin-bottom: 20px;
+            border-radius: 5px;
+            color: #E0E0E0; /* Lys grå tekstfarve */
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out; /* Fade-in/fade-out transition */
+        }
+        section.show {
+            opacity: 1;
+        }
+        .hidden {
+            display: none;
+        }
+        .bio {
+            font-size: 18px;
+            margin: 20px 0;
+        }
+        .image-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .image-gallery img {
+            width: 100%;
+            height: 400px; /* Fixed height for all images */
+            object-fit: cover; /* Ensures image covers the set dimensions */
+            border: 3px solid #D32F2F; /* Rød kant om billederne */
+            cursor: pointer;
+        }
+        footer {
+            background-color: #D32F2F; /* Rød baggrundsfarve */
+            color: #FFFFFF; /* Hvid tekstfarve */
+            text-align: center;
+            padding: 10px;
+            position: fixed;
+            width: 100%;
+            bottom: 0;
+        }
+        .gallery img {
+            max-width: 100%;
+            height: auto;
+            margin-bottom: 10px;
+        }
+        /* Tilføjet styling for login-siden */
+        .login-container {
+            margin-top: 50px;
+        }
+        .login-form {
+            display: inline-block;
+            text-align: left;
+            background-color: #424242;
+            padding: 50px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+        .login-form h2 {
+            margin-top: 0;
+        }
+        .login-form label {
+            display: block;
+            margin-bottom: 10px;
+        }
+        .login-form input {
+            width: 93%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: none;
+            border-radius: 5px;
+        }
+        .login-form button {
+            width: 100%;
+            padding: 10px;
+            background-color: #D32F2F;
+            color: #FFFFFF;
+            border: none;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .login-form button:hover {
+            background-color: #E53935;
+        }
+        /* Tilføjelse af styling for admin-knappen */
+        .admin-btn {
+            margin-top: 10px;
+            background-color: #424242; /* Samme farve som login-formularen */
+            color: #FFFFFF;
+            padding: 5px 10px;
+            border: none;
+            border-radius: 5px;
+            font-weight: bold;
+            text-align: center;
+            text-decoration: none;
+            display: block;
+            cursor: pointer;
+        }
+        .admin-btn:hover {
+            background-color: #333333;
+        }
+        /* Styling til at vise brugernavn efter login */
+        #user-info {
+            position: absolute;
+            top: 20px;
+            right: 10px;
+            background-color: #FFFFFF;
+            color: #D32F2F;
+            padding: 5px 10px;
+            border-radius: 3px;
+            font-weight: bold;
+            display: none; /* Skjult som standard */
+        }
+    </style>
+    <!-- Google Translate widget -->
+    <script type="text/javascript">
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({
+                pageLanguage: 'da',
+                includedLanguages: 'en,ru,pl'
+            }, 'google_translate_element');
+        }
+    </script>
+    <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+</head>
+<body>
+
+<header>
+    <div class="header-container">
+        <img src="https://i.postimg.cc/3J2PRrf4/dbf851fb-5544-4f95-8d1f-267bd83f9f93.jpg" alt="Gopnik Logo" class="logo">
+        <h1>SlavHub</h1>
+    </div>
+    <a href="#login" class="login-btn">Login</a>
+    <button class="translate-btn" onclick="document.getElementById('google_translate_element').style.display = 'block';">Translate</button>
+    <div id="google_translate_element" style="display: none;"></div> <!-- Plads til Google Translate widget -->
+    <p id="user-info"></p> <!-- Plads til brugernavn -->
+    <p>Velkommen til SlavHub - dit hub for Gopniks og russisk kultur!</p>
+</header>
+
+<nav>
+    <a href="#" class="link" data-target="omos">Om Os</a>
+    <a href="#" class="link" data-target="billeder">Billeder</a>
+    <a href="#" class="link" data-target="videoer">Videoer</a>
+    <a href="#" class="link" data-target="kontakt">Kontakt Os</a>
+    <a href="#" class="link" data-target="historie">Om Gopniks</a>
+</nav>
+
+<section id="omos" class="show">
+    <h2>Om Os</h2>
+    <p>Vi er dedikeret til at levere de seneste nyheder, billeder og videoer fra den russiske gopnik kultur. Vores passion for russisk kultur driver os til at levere det bedste indhold til vores brugere. Venligt hilsen de to danske gopniks</p>
+</section>
+
+<section id="billeder" class="hidden">
+    <h2>Billeder</h2>
+    <div class="image-gallery">
+        <img src="https://i.postimg.cc/3xt6mkJk/thumbnail-4.jpg" alt="Billede 1">
+        <img src="https://i.postimg.cc/V6pffqr5/thumbnail-2.jpg" alt="Billede 2">
+        <img src="https://i.postimg.cc/DZxz2hDP/thumbnail-3.jpg" alt="Billede 3">
+    </div>
+</section>
+
+<section id="videoer" class="hidden">
+    <h2>Videoer</h2>
+    <div class="gallery">
+        <iframe width="560" height="315" src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="Video 1" frameborder="0" allowfullscreen></iframe>
+        <iframe width="560" height="315" src="https://www.youtube.com/embed/3JZ_D3ELwOQ" title="Video 2" frameborder="0" allowfullscreen></iframe>
+    </div>
+</section>
+
+<section id="kontakt" class="hidden">
+    <h2>Kontakt Os</h2>
+    <p>Har du spørgsmål eller kommentarer? Kontakt os venligst via vores e-mail: kontakt@slavhub.dk.</p>
+</section>
+
+<section id="historie" class="hidden">
+    <h2>Om Gopniks</h2>
+    <div class="bio">
+        <p>Gopniks er en subkultur, der stammer fra Rusland og de tidligere sovjetiske lande. De er kendt for deres unikke stil og livsstil, som ofte inkluderer Adidas-træningsdragter, squatting og en forkærlighed for russisk rap.</p>
+    </div>
+</section>
+
+<section id="login" class="hidden">
+    <div class="login-container">
+        <form class="login-form">
+            <h2>Login</h2>
+            <label for="username">Brugernavn:</label>
+            <input type="text" id="username" name="username" required>
+            <label for="password">Adgangskode:</label>
+            <input type="password" id="password" name="password" required>
+            <button type="submit">Login</button>
+            <a href="#" class="admin-btn">Admin</a>
+        </form>
+    </div>
+</section>
+
+<footer>
+    <p>&copy; 2024 SlavHub. Alle rettigheder forbeholdes.</p>
+</footer>
+
+<script>
+document.querySelectorAll('.link').forEach(link => {
+    link.addEventListener('click', function(event) {
+        event.preventDefault();
+
+        // Fade out the current visible section
+        const currentSection = document.querySelector('section.show');
+        if (currentSection) {
+            currentSection.classList.remove('show');
+            setTimeout(() => {
+                currentSection.classList.add('hidden');
+            }, 500); // Match this duration with the CSS transition
+        }
+
+        // Show the target section
+        const targetId = this.getAttribute('data-target');
+        const targetSection = document.getElementById(targetId);
+        targetSection.classList.remove('hidden');
+        setTimeout(() => {
+            targetSection.classList.add('show');
+        }, 10); // Small delay to ensure class changes are applied
+    });
+});
+
+document.querySelector('.login-btn').addEventListener('click', function(event) {
+    event.preventDefault();
+    const currentSection = document.querySelector('section.show');
+    if (currentSection) {
+        currentSection.classList.remove('show');
+        setTimeout(() => {
+            currentSection.classList.add('hidden');
+        }, 500); // Match this duration with the CSS transition
+    }
+    const loginSection = document.getElementById('login');
+    loginSection.classList.remove('hidden');
+    setTimeout(() => {
+        loginSection.classList.add('show');
+    }, 10); // Small delay to ensure class changes are applied
+});
+</script>
+
+</body>
+</html>
